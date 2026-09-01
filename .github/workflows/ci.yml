@@ -28,7 +28,7 @@ jobs:
 
       - name: Run Django checks
         run: |
-          python manage.py check
+          python manage.py runserver
 
       - name: Run migrations
         run: |
