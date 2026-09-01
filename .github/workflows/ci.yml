@@ -17,6 +17,13 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      - name: Show project structure
+        run: |
+          pwd
+          ls -la
+          find . -name "manage.py"
+
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
