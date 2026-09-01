@@ -1,0 +1,27 @@
+{% extends "shop/base.html" %}
+{% block title %}Import Image From URL{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Import product image from URL</h1>
+<!-- VULNERABILITY #19: SSRF - the server fetches whatever URL is supplied
+     here with no allow-list. Try pointing it at an internal service or a
+     cloud metadata endpoint, e.g. http://169.254.169.254/latest/meta-data/ -->
+<div class="tool-card">
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-2">
+      <label class="form-label">Product ID</label>
+      <input class="form-control" name="product_id">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Image URL</label>
+      <input class="form-control" name="image_url" placeholder="https://...">
+    </div>
+    <button class="btn-buy" style="max-width:200px" type="submit">Fetch</button>
+  </form>
+  {% if status %}
+  <p class="mt-3 mb-1">HTTP status: {{ status }}</p>
+  <pre class="bg-light p-3 rounded">{{ preview }}</pre>
+  {% endif %}
+</div>
+{% endblock %}

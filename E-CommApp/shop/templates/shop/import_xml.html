@@ -1,0 +1,19 @@
+{% extends "shop/base.html" %}
+{% block title %}Import Products (XML){% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Bulk import products from XML</h1>
+<!-- VULNERABILITY #18: XXE - the uploaded XML is parsed with
+     resolve_entities=True and load_dtd=True, so a DOCTYPE defining an
+     external entity (e.g. pointing at a local file) will be expanded
+     server-side. Expected format:
+     <products><product><name>Foo</name><price>9.99</price></product></products> -->
+<div class="tool-card">
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+  {% if created %}<div class="alert alert-success">Imported {{ created }} product(s).</div>{% endif %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input class="form-control mb-3" type="file" name="xml_file" accept=".xml">
+    <button class="btn-buy" style="max-width:200px" type="submit">Import</button>
+  </form>
+</div>
+{% endblock %}

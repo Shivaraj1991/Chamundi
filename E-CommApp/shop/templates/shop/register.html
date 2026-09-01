@@ -1,0 +1,33 @@
+{% extends "shop/base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-side">
+    <h2>Join VulnShop</h2>
+    <p>Create an account to track orders, save addresses, and get personalized deals.</p>
+    <i class="bi bi-person-plus" style="font-size:3rem;"></i>
+  </div>
+  <div class="auth-form">
+    <h4 class="mb-3">Create account</h4>
+    {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input class="form-control" name="username">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input class="form-control" type="email" name="email">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <!-- No password strength requirement is enforced server-side. -->
+        <input class="form-control" type="password" name="password">
+      </div>
+      <button class="btn-buy w-100" type="submit">Create account</button>
+    </form>
+    <p class="mt-3 mb-0"><a href="{% url 'login' %}">Already have an account? Login</a></p>
+  </div>
+</div>
+{% endblock %}

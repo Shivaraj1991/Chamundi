@@ -1,0 +1,45 @@
+{% extends "shop/base.html" %}
+{% load shop_extras %}
+{% block title %}Catalog{% endblock %}
+{% block content %}
+
+<div class="hero">
+  <div>
+    <h1>Big Deals Days</h1>
+    <p>Up to 40% off electronics, home &amp; kitchen essentials, and more. Free delivery on orders over $50.</p>
+    <a class="btn-hero" href="#catalog">Shop the sale</a>
+  </div>
+  <div class="hero-badge"><i class="bi bi-bag-check"></i></div>
+</div>
+
+<div class="section-title" id="catalog">
+  Trending products
+  <a class="view-all" href="{% url 'search' %}?q=">View all</a>
+</div>
+
+<div class="product-grid">
+  {% for product in products %}
+  <div class="product-card">
+    {% if product.demo_discount %}<span class="badge-discount">{{ product.demo_discount }}% OFF</span>{% endif %}
+    <div class="product-thumb"><i class="bi bi-box-seam"></i></div>
+    <span class="badge-assured"><i class="bi bi-patch-check-fill"></i> Assured</span>
+    <div class="product-title">{{ product.name }}</div>
+    <div class="product-rating">
+      {{ product.demo_rating|stars }}
+      <span class="count">({{ product.demo_reviews }})</span>
+    </div>
+    <div class="price-row">
+      <span class="price-now">${{ product.price }}</span>
+      <span class="price-mrp">${{ product.demo_mrp }}</span>
+      <span class="price-off">{{ product.demo_discount }}% off</span>
+    </div>
+    <div class="card-actions">
+      <a class="btn-outline-brand" href="{% url 'product_detail' product.pk %}">View</a>
+      <a class="btn-buy" href="{% url 'add_to_cart' product.pk %}"><i class="bi bi-cart-plus"></i> Add</a>
+    </div>
+  </div>
+  {% empty %}
+  <p>No products yet. Run <code>python manage.py seed_demo_data</code>.</p>
+  {% endfor %}
+</div>
+{% endblock %}

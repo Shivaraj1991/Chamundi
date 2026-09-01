@@ -1,0 +1,27 @@
+{% extends "shop/base.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<!-- VULNERABILITY #3: Reflected XSS - `query` is rendered with |safe below.
+     Try: /search/?q=<script>alert(document.cookie)</script>
+     VULNERABILITY #1: SQL Injection - the raw query behind this page can
+     return arbitrary columns via UNION, which is why results are shown as
+     a plain table rather than product cards. -->
+<h1 class="h4 mb-3">Search results for: <span class="text-danger">{{ query|safe }}</span></h1>
+<div class="tool-card" style="max-width:100%;">
+  <table class="table table-striped mb-0">
+    <thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Price</th></tr></thead>
+    <tbody>
+    {% for row in results %}
+      <tr>
+        <td>{{ row.0 }}</td>
+        <td>{{ row.1 }}</td>
+        <td>{{ row.2 }}</td>
+        <td>${{ row.3 }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">No results.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "shop/base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">My account</h1>
+<!-- VULNERABILITY #7: IDOR - this page has no check that target_user is
+     request.user. Change the number in the URL (/profile/2/, /profile/3/,
+     ...) to view or edit anyone's profile, including their stored card
+     number below. -->
+<div class="account-layout">
+  <div class="account-sidebar">
+    <a class="active" href="{% url 'profile' target_user.id %}"><i class="bi bi-person-circle"></i> Profile</a>
+    <a href="{% url 'order_list' %}"><i class="bi bi-bag-check"></i> Orders</a>
+    <a href="{% url 'cart_view' %}"><i class="bi bi-cart3"></i> Cart</a>
+    <a href="{% url 'upload_avatar' %}"><i class="bi bi-image"></i> Upload avatar</a>
+    <a href="{% url 'apply_coupon' %}"><i class="bi bi-tools"></i> Coupon tool</a>
+    <a href="{% url 'track_shipment' %}"><i class="bi bi-truck"></i> Track shipment</a>
+    <a href="{% url 'email_preview' %}"><i class="bi bi-envelope"></i> Email preview</a>
+  </div>
+
+  <div class="account-main">
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <div class="avatar-circle">{{ target_user.username|slice:":1"|upper }}</div>
+      <div>
+        <div class="fw-bold fs-5">{{ target_user.username }}</div>
+        <div class="text-muted small">{{ target_user.email }}</div>
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Bio</label>
+        <textarea class="form-control" name="bio" rows="2">{{ profile.bio }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Phone</label>
+        <input class="form-control" name="phone" value="{{ profile.phone }}">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Credit card number</label>
+        <!-- VULNERABILITY #28: stored and displayed in plaintext. -->
+        <input class="form-control" name="credit_card_number" value="{{ profile.credit_card_number }}">
+      </div>
+      <button class="btn-buy" style="max-width:200px" type="submit">Save changes</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

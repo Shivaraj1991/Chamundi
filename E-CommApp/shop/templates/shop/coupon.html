@@ -1,0 +1,23 @@
+{% extends "shop/base.html" %}
+{% block title %}Coupon Calculator{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Discount calculator</h1>
+<!-- VULNERABILITY #17: the formula is passed to Python's eval(). Try:
+     __import__('os').popen('whoami').read() -->
+<div class="tool-card">
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+  {% if result is not None %}<div class="alert alert-success">Result: {{ result }}</div>{% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-2">
+      <label class="form-label">Price</label>
+      <input class="form-control" name="price" value="100">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Formula (Python expression, uses `price`)</label>
+      <input class="form-control" name="formula" value="price * 0.9">
+    </div>
+    <button class="btn-buy" style="max-width:200px" type="submit">Calculate</button>
+  </form>
+</div>
+{% endblock %}

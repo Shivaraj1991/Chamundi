@@ -1,0 +1,26 @@
+{% extends "shop/base.html" %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+{% block content %}
+<!-- VULNERABILITY #8: IDOR - no check that order.user == request.user, so
+     incrementing the ID in the URL discloses other customers' orders. -->
+<div class="order-card">
+  <div class="order-head">
+    <h1 class="h5 mb-0">Order #{{ order.id }}</h1>
+    <span class="status-pill status-{{ order.status }}">{{ order.status }}</span>
+  </div>
+  <p class="text-muted small mb-1">Placed by user ID: {{ order.user_id }} on {{ order.created_at|date:"M d, Y H:i" }}</p>
+  <p class="mb-1"><i class="bi bi-geo-alt"></i> {{ order.shipping_address|default:"No address on file" }}</p>
+
+  <table class="table mt-3">
+    <thead><tr><th>Product</th><th>Qty</th><th>Price</th></tr></thead>
+    <tbody>
+    {% for item in order.items.all %}
+      <tr><td>{{ item.product.name }}</td><td>{{ item.quantity }}</td><td>${{ item.price }}</td></tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr><th colspan="2" class="text-end">Total</th><th>${{ order.total }}</th></tr>
+    </tfoot>
+  </table>
+</div>
+{% endblock %}

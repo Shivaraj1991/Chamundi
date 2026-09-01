@@ -1,0 +1,23 @@
+{% extends "shop/base.html" %}
+{% block title %}Email Preview{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Order confirmation email preview</h1>
+<!-- VULNERABILITY #16: Server-Side Template Injection - the text below is
+     compiled and rendered as a live Django template. Try:
+     {% templatetag openblock %} for c in user.get_all_permissions {% templatetag closeblock %}{% templatetag openvariable %} c {% templatetag closevariable %}{% templatetag openblock %} endfor {% templatetag closeblock %} -->
+<div class="tool-card">
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Template content</label>
+      <textarea class="form-control" name="template_content" rows="4">Hi {{ '{{ user.username }}' }}, thanks for your order!</textarea>
+    </div>
+    <button class="btn-buy" style="max-width:200px" type="submit">Render preview</button>
+  </form>
+  {% if rendered %}
+  <h3 class="h6 mt-3">Rendered output</h3>
+  <div class="border rounded p-3">{{ rendered }}</div>
+  {% endif %}
+</div>
+{% endblock %}

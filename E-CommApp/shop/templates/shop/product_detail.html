@@ -1,0 +1,72 @@
+{% extends "shop/base.html" %}
+{% load shop_extras %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="pd-gallery"><i class="bi bi-box-seam"></i></div>
+  </div>
+  <div class="col-md-6">
+    <span class="badge-assured"><i class="bi bi-patch-check-fill"></i> Assured</span>
+    <h1 class="h3 mb-1">{{ product.name }}</h1>
+    <div class="product-rating mb-2">
+      {{ product.demo_rating|stars }}
+      <span class="count">{{ product.demo_reviews }} ratings</span>
+    </div>
+    <p class="text-muted">{{ product.description }}</p>
+
+    <div class="pd-buybox">
+      <div class="price-row">
+        <span class="price-now">${{ product.price }}</span>
+        <span class="price-mrp">${{ product.demo_mrp }}</span>
+        <span class="price-off">{{ product.demo_discount }}% off</span>
+      </div>
+      <div class="pd-meta mb-3">
+        <div class="row-line"><i class="bi bi-truck"></i> Free delivery in 2-4 business days</div>
+        <div class="row-line"><i class="bi bi-arrow-repeat"></i> 7 day replacement policy</div>
+        <div class="row-line"><i class="bi bi-shield-check"></i> 1 year warranty</div>
+        <div class="row-line"><i class="bi bi-boxes"></i> {{ product.stock }} in stock</div>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn-buy" href="{% url 'add_to_cart' product.pk %}"><i class="bi bi-cart-plus"></i> Add to cart</a>
+        <a class="btn-outline-brand" href="{% url 'add_to_cart' product.pk %}"><i class="bi bi-lightning-charge"></i> Buy now</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="my-4">
+<h3 class="mb-3">Ratings &amp; reviews</h3>
+{% for review in reviews %}
+  <div class="review-card">
+    <div class="review-user">{{ review.user.username }}</div>
+    <div class="review-stars">{{ review.rating|stars }}</div>
+    <!-- VULNERABILITY #4: Stored XSS - review.comment is rendered with |safe
+         instead of being auto-escaped, so a review containing
+         <script>...</script> executes for every visitor. -->
+    <div>{{ review.comment|safe }}</div>
+  </div>
+{% empty %}
+  <p class="text-muted">No reviews yet. Be the first to review this product.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+<div class="tool-card mt-3">
+  <h5 class="mb-3">Write a review</h5>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-2">
+      <label class="form-label">Rating (1-5)</label>
+      <input class="form-control" type="number" name="rating" min="1" max="5" value="5">
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Comment</label>
+      <textarea class="form-control" name="comment" rows="3"></textarea>
+    </div>
+    <button class="btn-buy" style="max-width:200px" type="submit">Submit review</button>
+  </form>
+</div>
+{% else %}
+<p><a href="{% url 'login' %}">Log in</a> to leave a review.</p>
+{% endif %}
+{% endblock %}

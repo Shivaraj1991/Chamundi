@@ -1,0 +1,30 @@
+{% extends "shop/base.html" %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Your orders</h1>
+<!-- Deliberately lists every order in the system, not just request.user's,
+     to make the IDOR in order_detail easy to demonstrate/find. -->
+{% for order in orders %}
+<div class="order-card">
+  <div class="order-head">
+    <div>
+      <strong>Order #{{ order.id }}</strong>
+      <span class="text-muted small ms-2">placed by {{ order.user.username }} on {{ order.created_at|date:"M d, Y" }}</span>
+    </div>
+    <span class="status-pill status-{{ order.status }}">{{ order.status }}</span>
+  </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <span class="text-muted small">{{ order.items.count }} item(s)</span>
+    <div>
+      <span class="fw-bold me-3">${{ order.total }}</span>
+      <a class="btn-outline-brand d-inline-block" style="max-width:160px" href="{% url 'order_detail' order.id %}">View details</a>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="tool-card text-center py-5">
+  <i class="bi bi-bag fs-1 text-muted"></i>
+  <p class="mt-2 mb-0">No orders yet.</p>
+</div>
+{% endfor %}
+{% endblock %}

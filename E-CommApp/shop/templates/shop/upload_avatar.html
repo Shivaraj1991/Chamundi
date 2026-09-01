@@ -1,0 +1,18 @@
+{% extends "shop/base.html" %}
+{% block title %}Upload Avatar{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Upload avatar</h1>
+<!-- VULNERABILITY #12/#13: no extension/content-type/size validation, and
+     the filename is used verbatim, enabling path traversal
+     (e.g. "../../../vulnshop/settings.py") and upload of HTML/SVG for
+     stored XSS if these files are ever served directly. -->
+<div class="tool-card">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input class="form-control mb-3" type="file" name="avatar">
+    <button class="btn-buy" style="max-width:200px" type="submit">Upload</button>
+  </form>
+  <p class="mt-3 mb-0 text-muted small">Files are saved under /media/avatars/&lt;original filename&gt; and served at
+    <code>{% url 'download_file' %}?file=avatars/&lt;filename&gt;</code>.</p>
+</div>
+{% endblock %}
