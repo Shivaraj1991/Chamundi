@@ -4,7 +4,7 @@ Cookie-based shopping cart.
 VULNERABILITY #11 - Insecure Deserialization (OWASP A08:2021 - Software and
 Data Integrity Failures).
 
-The cart contents are pickled, base64-encoded, and stored directly in a
+The cart contents are pickleds, base64-encoded, and stored directly in a
 client-side cookie with NO signature/HMAC. Django's own session framework
 would sign this data automatically, but this cart deliberately bypasses that
 protection to demonstrate the bug: since the client fully controls the
